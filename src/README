@@ -1,0 +1,18 @@
+--How to Compile
+  In ~/HW3/src directory, enter the following command:
+  $ make
+  It will generate the executable file "hw3" in "~/HW3/bin/"
+
+  $ make clean
+  It will remove the executable file
+
+--How to Run
+  In ~/HW3/src directory, enter the following command:
+  $ ../bin/<exe> <*.hardblocks> <*.nets> <*.pl> <*.floorplan> <dead_space_ratio>
+  e.g.:
+  $ ../bin/hw3 ../testcases/n100.hardblocks ../testcases/n100.nets  ../testcases/n100.pl ../output/n100.floorplan 0.1
+
+  In ~/HW3/bin directory, enter the following command:
+  $ ./<exe> <*.hardblocks> <*.nets *.pl> <*.floorplan> <dead_space_ratio>
+  e.g.:
+  $ ./hw3 ../testcases/n100.hardblocks ../testcases/n100.nets  ../testcases/n100.pl ../output/n100.floorplan 0.1
