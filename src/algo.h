@@ -6,7 +6,6 @@ using namespace std;
 
 bool Comparator(const Block* a, const Block* b);
 BTree* INIT_BTree(map<string, Block*> block_list);
-// BTree* INIT_Complete_BTree(map<string, Block*> block_list);
 
 BTree* Perturb(BTree* Tree);
 double HPWL();

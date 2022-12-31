@@ -14,7 +14,6 @@ void net_read(const char *argv){
 	}
     file >> tmp >> tmp >> total_nets;
     file >> tmp >> tmp >> total_pins;
-    //cout << total_pins << ' ' << total_nets;
     while(file >> tmp >> tmp >> degree){
         Net* net = new Net(degree);
         while(degree--){
@@ -54,8 +53,6 @@ void hardblocks_read(const char *argv){
             y.erase(y.end()-1);
             coordinate_x = stof(x);
             coordinate_y = stof(y);
-            //cout << coordinate_x << endl;
-            //cout << coordinate_y << endl;
             area = coordinate_x * coordinate_y;
             if(area){
                 block->width = coordinate_x;
@@ -83,7 +80,6 @@ void pl_read(const char *argv){
 		return ;
 	}
     while(file >> name >> coordinate_x >> coordinate_y){
-        //cout << coordinate_x << ' ' << coordinate_y << endl;
         terminal_list[name]->x = coordinate_x;
         terminal_list[name]->y = coordinate_y;
     }
@@ -118,10 +114,6 @@ BTNode* DFCopy(BTNode *cur){
 
 void Resume_To_Saved(BTree *Original_Tree, BTree *Resuming_Tree){
     Resume_Block(Resuming_Tree->root);
-    // for(auto const & iter : Resuming_Tree->node_of){
-    //     Block *block = iter.first;
-    //     block_list[block->name] = block;
-    // }
     Kill_BTree(Original_Tree);
     Original_Tree = NULL;
     return;
@@ -137,10 +129,6 @@ void Resume_Block(BTNode *cur){
 }
 
 void Kill_BTree(BTree *Tree){
-    // Tree->contour.clear();
-    // Tree->width = 0.0;
-    // Tree->height = 0.0;
-    // Tree->area = 0.0;
     DFKill(Tree->root);
     Tree = NULL;
 }
@@ -189,13 +177,10 @@ void print_terminals(){
 }
 
 void print_Tree(const BTNode *cur){
-    //static int count = 0;
     if(cur == NULL) return;
     cout << "name: " << cur->block->name <<  " x: " << cur->block->x << " y: " << cur->block->y << " width: " << cur->block->width << " height: " << cur->block->height << endl;
-    //count++;
     print_Tree(cur->left);
     print_Tree(cur->right);
-    //cout << count << endl;
     return;
 }
 

@@ -2,7 +2,6 @@
 using namespace std;
 
 bool Comparator(const Block* a, const Block* b){
-    //return a->area > b->area;
     return a->height > b->height;
 }
 
@@ -18,7 +17,7 @@ BTree* INIT_BTree(map<string, Block*> block_list){
         if(b->width > b->height) b->Rotate();
         ordered_blocks.push_back(b);
     }
-    sort(ordered_blocks.begin(), ordered_blocks.end(), Comparator); //for(auto& block : ordered_blocks) cout << block->area << ' ';
+    sort(ordered_blocks.begin(), ordered_blocks.end(), Comparator);
     
     //Build Tree Root
     new_node = new BTNode(ordered_blocks[0]);
@@ -93,44 +92,6 @@ BTree* INIT_BTree(map<string, Block*> block_list){
     return Tree;
 }
 
-// BTree* INIT_Complete_BTree(map<string, Block*> block_list){
-//     queue<BTNode *> Node_Queue;
-//     BTNode *cur_node, *new_node = NULL;
-//     vector<Block *> ordered_blocks;
-//     BTree *Tree = new BTree();
-//     //Sort Blocks by Area
-//     for(auto const &block : block_list){
-//         ordered_blocks.push_back(block.second);
-//     }
-//     sort(ordered_blocks.begin(), ordered_blocks.end(), Comparator); //for(auto& block : ordered_blocks) cout << block->area << ' ';
-    
-//     //Build Tree Root
-//     new_node = new BTNode(ordered_blocks[0]);
-//     //build connection
-//     Tree->root = new_node;
-//     cur_node = new_node;
-//     for(int i = 1; i < ordered_blocks.size(); i++){
-//         new_node = new BTNode(ordered_blocks[i]);
-//         if(cur_node->left == NULL){
-//             cur_node->left = new_node;
-//             new_node->parent = cur_node;
-//         }
-//         else{
-//             if(cur_node->right == NULL){
-//                 cur_node->right = new_node;
-//                 new_node->parent = cur_node;
-//                 Node_Queue.push(new_node);
-//             }
-//         }
-//         if(cur_node->left != NULL && cur_node->right != NULL){
-//             cur_node = Node_Queue.front();
-//             Node_Queue.pop();
-//         }
-//     }
-//     Tree->Repack();
-//     return Tree;
-// }
-
 BTree* Perturb(BTree* Tree){
     map<string, Block*>::iterator block_iter;
     Block *target = NULL;
@@ -159,10 +120,6 @@ BTree* Perturb(BTree* Tree){
 
         Tree->Move(Tree->node_of[block_iter->second], Tree->node_of[target]);
     }
-    // else{
-    //     BTNode *target_node = Tree->node_of[target];
-    //     swap(target_node->left, target_node->right);
-    // }
     return Tree;
 }
 
@@ -204,16 +161,12 @@ double Cost_Function(BTree *Tree){
     double ex_width = max(Tree->width - FLOORPLAN_W, 0.0);
     double ex_height = max(Tree->height - FLOORPLAN_H, 0.0);
     
-    // return 1000.0 * (ex_height + ex_width) + HPWL();
-    // return (ex_height + ex_width) * HPWL();
-    // return 0.5 * Tree->area + 0.5 * HPWL();
     return 1000.0 * (ex_height + ex_width) + ((300.0 / total_blocks) * HPWL());
 }
 
 void Fast_Simulated_Annealing(BTree *Tree, int seed, clock_t start){
     if(seed != 0) srand(seed);
-    // double alpha = 0.9;
-    // double convolution_rate = 1;
+
     double P = 0.9;
     int k = 8;
     double delta_avg = 1e-5;
@@ -224,8 +177,6 @@ void Fast_Simulated_Annealing(BTree *Tree, int seed, clock_t start){
     double accept_prob = 0.0;
     int N = k * total_blocks;
     int uphill = 0;
-    //int rejected = 0;
-    //double rejected_rate = 0.0;
     bool update_best = false;
 
 
@@ -237,7 +188,6 @@ void Fast_Simulated_Annealing(BTree *Tree, int seed, clock_t start){
     double delta_cost = 0.0;
 
     cur_temperature = -delta_avg / log(P);
-    //cout << cur_temperature << endl;
 
     Best_Tree = Save_BTree(Tree);
     Original_Tree = Save_BTree(Tree);
@@ -250,34 +200,23 @@ void Fast_Simulated_Annealing(BTree *Tree, int seed, clock_t start){
     do{
         count++;
         update_best = false;
-        //rejected = 0;
         uphill = 0;
         int iter = 0;
-        // vector<double> cost_history;
         for(; iter < 2*N && uphill < N; iter++){
-            //cout << "iter: " << iter << endl;
             
             Perturb(Tree);
-            //cout << "Perturbed\n";
             Tree->Repack();
     
             
             cur_cost = Cost_Function(Tree);
             
-            //cout << cur_cost << endl;
             delta_cost = cur_cost - last_iter_cost;
-            //cout << delta_cost << endl;
             accept_prob = exp(-delta_cost / cur_temperature);
-            //cout << accept_prob << endl;
-            // cost_history.push_back(cur_cost);
 
             double dice = double(rand()) / RAND_MAX;
-            //cout << delta_cost << ' ' << dice << ' ' << accept_prob << endl;
             if(delta_cost <= 0 || dice < accept_prob){
-                //cout << "Accepeted\n";
                 
                 Kill_BTree(Original_Tree);
-                //cout << "killed\n";
 
                 Original_Tree = Save_BTree(Tree);
 
@@ -285,23 +224,16 @@ void Fast_Simulated_Annealing(BTree *Tree, int seed, clock_t start){
                 if(delta_cost > 0) uphill++;
                 
                 // keep best solution
-                if(cur_cost < best_cost && (Tree->width <= FLOORPLAN_W && Tree->height <= FLOORPLAN_H)){ //
-                    //cout << "Best\n";
+                if(cur_cost < best_cost && (Tree->width <= FLOORPLAN_W && Tree->height <= FLOORPLAN_H)){
                     Kill_BTree(Best_Tree);
                     Best_Tree = Save_BTree(Tree);
 
                     best_cost = cur_cost;
                     bad_count_streak = 0;
                     update_best = true;
-                    //cout << "best area: " << Tree->area << " best WL: " << HPWL() << " Best Cost: " << best_cost << " " << (Best_Tree->width <= FLOORPLAN_W && Best_Tree->height <= FLOORPLAN_H) << endl;
-                    //cout << HPWL(Tree) << endl;
-                    //cout << "total_area: " << total_area << endl;
-                    //if(Tree->area >= total_area) cout << "AREA ERROR\n"; 
                 }
             }
             else{
-                //cout << "Rejected\n";
-                //rejected++;
                 Resume_To_Saved(Tree, Original_Tree);
                 Tree = Original_Tree;
                 Original_Tree = Save_BTree(Tree);
@@ -310,10 +242,6 @@ void Fast_Simulated_Annealing(BTree *Tree, int seed, clock_t start){
 
         cur_temperature = 0.99 * cur_temperature;
         if(!update_best) bad_count_streak++;
-        //rejected_rate = float(rejected) / iter;
-        //cout << rejected_rate << endl;
-        //cout << count << endl;
-        //cout << Best_Tree->width << ' ' << FLOORPLAN_W << ' ' << Best_Tree->height << ' ' << FLOORPLAN_H << endl;
     }while(cur_temperature > termination_temperature && bad_count_streak <= 10 && ((((double) (clock() - start)) / CLOCKS_PER_SEC) <= 1150));
 
     Resume_To_Saved(Tree, Best_Tree);

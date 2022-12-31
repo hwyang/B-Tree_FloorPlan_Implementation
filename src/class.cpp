@@ -95,7 +95,6 @@ class BTree{
             this->contour.resize(1000);
             this->width = 0.0;
             this->height = 0.0;
-            //this->DFTravereBuild();
             this->Recursive_Build(this->root, 0);
             this->area = this->width * this->height;
         }
@@ -182,29 +181,13 @@ class BTree{
 
         void Move(BTNode *from, BTNode *to){
             if(from->parent == to) return;
-            //swap "from" and its most descendent child "target"
             BTNode *target = from;
-            //if(!target->left && !target->right) cout << "leaf node\n";
             while(target->left != NULL || target->right != NULL){
                 if(target->left != NULL) target = target->left;
                 else if(target->right != NULL) target = target->right;
             }
             if(to == target) return;
-            // cout << target->block->name << endl;
-            // cout << from->block->name << endl;
             this->Swap(target, from);
-            // cout << target->block->name << endl;
-            // cout << from->block->name << endl;
-
-            //if(!target->left && !target->right) cout << "leaf node\n";
-            // if(target->parent->left == target){
-            //     cout << "left child\n";
-            //     cout << target->parent->left->block->name << endl;
-            // }
-            // if(target->parent->right == target){
-            //     cout << "right child\n";
-            //     cout << target->parent->right->block->name << endl;
-            // }
             
             if(target->parent->left == target){
                 target->parent->left = NULL;
@@ -214,8 +197,6 @@ class BTree{
                     target->parent = to;
                     child->parent = target;
                     target->left = child;
-                    // if(rand() % 2) target->left = child;
-                    // else target->right = child;
                 }
                 else{
                     to->left = target;
@@ -230,8 +211,6 @@ class BTree{
                     target->parent = to;
                     child->parent = target;
                     target->right = child;
-                    // if(rand() % 2) target->left = child;
-                    // else target->right = child;
                 }
                 else{
                     to->right = target;

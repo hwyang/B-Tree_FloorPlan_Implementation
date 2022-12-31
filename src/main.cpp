@@ -49,13 +49,6 @@ int main(int argc, char *argv[]){
     
     
     printf("Total Run Time: %f\n", ((double) (clock() - start)) / CLOCKS_PER_SEC);
-    //print_Tree(Tree->root);
-    //cout << Tree->height << ' ' << Tree->width << ' ' << Tree->area << endl;
-    //for(auto &n : Tree->contour) cout << n << ' ';
-    //cout << DEAD_SPACE_RATIO << ' ' << FLOORPLAN_W << ' ' << FLOORPLAN_H << endl;
-    //print_nets();
-    //print_hard_blocks();
-    //print_terminals();
 
     return 0;
 }
